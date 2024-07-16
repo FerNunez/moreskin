@@ -1,0 +1,14 @@
+.image-container {
+    position: relative;
+    width: 30px;  /* Desired width of the cropped area */
+    height: 30px; /* Desired height of the cropped area */
+    overflow: hidden;
+}
+
+.cropped-image {
+    position: absolute;
+    top: -50px;   /* Adjust based on the part of the image you want to show */
+    left: -50px;  /* Adjust based on the part of the image you want to show */
+    width: 100px; /* Original width of the image */
+    height: 100px; /* Original height of the image */
+}
