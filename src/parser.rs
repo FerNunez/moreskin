@@ -8,6 +8,7 @@ use yew::prelude::*;
 pub struct Skin {
     pub champion_id: u64,
     pub is_base: bool,
+    pub id: u64,
     pub name: String,
     pub ownership: Ownership,
     pub splash_path: String,

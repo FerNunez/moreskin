@@ -3,8 +3,6 @@ mod parser;
 use gloo::console::log;
 use gloo_net::http::Request;
 use parser::*;
-use serde::de::value;
-use wasm_bindgen_futures::js_sys::JSON;
 use yew::prelude::*;
 
 use serde_json::{Value, json};
@@ -67,19 +65,6 @@ fn app() -> Html {
     let content : String = name_map_str.to_string();
     log!(&content);
     
-    //let name_map: Value = serde_json::from_str("{\"Aatrox\":\"Aatrox\"}").expect("Fail: could not parse correclty");
-    //
-    //let name_map = serde_json::Value::from_str(&content).expect("Can't decode content");
-    
-   // match serde_json::Value::from_str(&content){
-   //     Ok(value) => {
-   //         log!("got a value");
-   //         let asd: String = value["wukong"].to_string();
-   //         log!(asd);
-
-   //     },
-   //     Err(er) => log!("freaking error: {er:?}"),
-
    let name_map= match serde_json::Value::from_str(&content){
         Ok(value) => value, 
         Err(_) =>  Value::Null,
@@ -93,26 +78,41 @@ fn app() -> Html {
 }
 
 fn champ_inventory_html(lol_parsed: &LolParsed, name_map: &serde_json::Value ) -> Html {
-    lol_parsed.name_to_id.iter().map(|(champ_name, champ_id)| 
+
+    let champ_inventory = lol_parsed.name_to_id.iter().map(|(champ_name, champ_id)| 
         {
             let champ_name_cleaned = name_map[&champ_name.to_lowercase().chars().filter(|c| c.is_alphabetic()).collect::<String>()].to_string();
+            let mut champ_sorted = lol_parsed.id_to_inventory.get(champ_id).unwrap().owned.clone();
+            champ_sorted.sort_by(|a,b| a.name.cmp(&b.name));
+
+            let mut champ_sorted_notowned = lol_parsed.id_to_inventory.get(champ_id).unwrap().unowned.clone();
+            champ_sorted_notowned.sort_by(|a,b| a.name.cmp(&b.name));
         html!{
             <>
-                <p> {champ_name}</p>
                 <div style="display:flex;">
-                <p> {"owned" }</p>
-                {champ_list(&lol_parsed.id_to_inventory.get(champ_id).unwrap().owned, &champ_name_cleaned)}
-                <p> {"unowned" }</p>
-                {champ_list(&lol_parsed.id_to_inventory.get(champ_id).unwrap().unowned, &champ_name_cleaned)}
+                {champ_list(&champ_sorted, &champ_name_cleaned)}
+                <span style="display: inline-block; border-left: 10px solid gold; margin: 0 0px; height: 200;"></span>
+                {champ_list(&champ_sorted_notowned, &champ_name_cleaned)}
                 </div>
             </>
-    }}).collect::<Html>()
+    }}).collect::<Html>();
+
+    html! {
+
+            <>
+            {champ_inventory}
+            </>
+    }
 }
 
 fn champ_list(owned_list: &Vec<Skin>, champ_name: &str) -> Html {
     let owned_list = owned_list.iter().map(|skin| html!{ 
-        <div style="display: block; padding: 1px; margin:1px; width: 200px; height: 300px; line-height: 0;">
+
+        <div style="border: 10px solid gray; display: block; padding: 50px; margin:0px; width: 200px; height: 300px; line-height: 1px;">
             <img src={ get_skin_path(&skin, &champ_name)} style="width: 100%; height: 100%; object-fit: cover; display: block; margin: 0px; padding: 0px;" />
+            <p> {&skin.name} </p>
+            <p> {skin.champion_id} </p>
+            <p> {skin.id} </p>
         </div>
     }).collect::<Html>();
     owned_list
