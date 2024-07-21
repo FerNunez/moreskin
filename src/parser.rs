@@ -35,7 +35,7 @@ pub struct LolParsed {
 }
 
 impl LolParsed {
-    pub fn parse_content(json_string: String) -> Self {
+    pub fn parse_content(json_string: &str) -> Self {
         let skin_loot = serde_json::from_str::<Vec<Skin>>(&json_string)
             .expect("LogRocket: error serializing to JSON");
 

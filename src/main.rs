@@ -1,9 +1,11 @@
 use std::{collections::HashMap, io::Error, str::FromStr};
 mod parser;
 use gloo::console::log;
-use gloo_net::http::Request;
 use parser::*;
 use yew::prelude::*;
+
+const CHAMPION_MAP: &str = include_str!("../res/names_map.json");
+const CHAMPION_DB: &str = include_str!("../res/test.json");
 
 use serde_json::{Value, json};
 fn main() {
@@ -12,67 +14,40 @@ fn main() {
 
 #[function_component(App)]
 fn app() -> Html {
+
+    let val= use_state(|| serde_json::Value::Null);
+    let first_load = use_state(|| true); 
+    let name_map_str = use_state(|| String::new());
     let champ_inventory = use_state(|| LolParsed {
         name_to_id: HashMap::new(),
         id_to_inventory: HashMap::new(),
     });
 
-    {
+   
+    if *first_load {
         let champ_inventory = champ_inventory.clone();
-        use_effect_with((), move |_| {
-            let champ_inventory = champ_inventory.clone();
-            wasm_bindgen_futures::spawn_local(async move {
-                let fetched_videos: String = Request::get("http://127.0.0.1:8080/res/test.json")
-                    .send()
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap();
-                log!("Hi");
+        log!("Parsing content");
 
-                let lol_parse = LolParsed::parse_content(fetched_videos);
+        let lol_parse = LolParsed::parse_content(&CHAMPION_DB);
+        champ_inventory.set(lol_parse);
+        first_load.set(false);
+        name_map_str.set(CHAMPION_MAP.to_string());
 
-                //let searched_champ = "Lee Sin";
-                //lol_parse.print(searched_champ);
-                champ_inventory.set(lol_parse);
-            });
-            || ()
-        });
+       let name_map= match serde_json::Value::from_str(CHAMPION_MAP){
+            Ok(value) => value, 
+            Err(_) =>  Value::Null,
+        };
+        val.set(name_map);
     }
-
-    let name_map_str = use_state(|| String::new());
-    {
-        let name_map_str = name_map_str.clone();
-        use_effect_with((), move |_| {
-            let name_map_str = name_map_str.clone();
-            wasm_bindgen_futures::spawn_local(async move {
-                let content_str: String = Request::get("http://127.0.0.1:8080/res/names_map.json")
-                    .send()
-                    .await
-                    .unwrap()
-                    .text()
-                    .await
-                    .unwrap();
-
-
-                name_map_str.set(content_str);
-            });
-            || ()
-        });
-    }
-
-    let content : String = name_map_str.to_string();
-    log!(&content);
     
-   let name_map= match serde_json::Value::from_str(&content){
-        Ok(value) => value, 
-        Err(_) =>  Value::Null,
-    };
 
+    //html!{"HI"}
+
+    //<p> 
+    //}
     html! {
         <div style="display: flex; flex-direction: column; align-items: flex-start; ">
-            {champ_inventory_html(&*champ_inventory, &name_map)}
+            {champ_inventory_html(&*champ_inventory, &*val)}
         </div>
     }
 }
