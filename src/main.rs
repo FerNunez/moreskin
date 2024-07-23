@@ -1,13 +1,16 @@
-use std::{collections::HashMap, io::Error, str::FromStr};
+use std::{collections::HashMap, str::FromStr};
 mod parser;
 use gloo::console::log;
 use parser::*;
 use yew::prelude::*;
+use stylist::Style;
 
 const CHAMPION_MAP: &str = include_str!("../res/names_map.json");
 const CHAMPION_DB: &str = include_str!("../res/test.json");
+const STYLE_FILE: &str = include_str!("main.css");
 
-use serde_json::{Value, json};
+use serde_json::Value;
+
 fn main() {
     yew::Renderer::<App>::new().render();
 }
@@ -81,16 +84,42 @@ fn champ_inventory_html(lol_parsed: &LolParsed, name_map: &serde_json::Value ) -
 }
 
 fn champ_list(owned_list: &Vec<Skin>, champ_name: &str) -> Html {
+    let stylecss = Style::new(STYLE_FILE).unwrap();
+
     let owned_list = owned_list.iter().map(|skin| html!{ 
 
-        <div style="border: 10px solid gray; display: block; padding: 50px; margin:0px; width: 200px; height: 300px; line-height: 1px;">
-            <img src={ get_skin_path(&skin, &champ_name)} style="width: 100%; height: 100%; object-fit: cover; display: block; margin: 0px; padding: 0px;" />
-            <p> {&skin.name} </p>
-            <p> {skin.champion_id} </p>
-            <p> {skin.id} </p>
-        </div>
+        //<div style="border: 10px solid gray; display: block; padding: 50px; margin:0px; width: 200px; height: 300px; line-height: 1px;">
+         //   //<img src={ get_skin_path(&skin, &champ_name)} style="width: 100%; height: 100%; object-fit: cover; display: block; margin: 0px; padding: 0px;" />
+         //   <p> {&skin.name} </p>
+         //   <p> {skin.champion_id} </p>
+         //   <p> {skin.id} </p>
+
+    <div class={stylecss.clone()}>
+          <div class="nft">
+            <div class="main">
+               <img class="tokenImage" src={get_skin_path(&skin, &champ_name)} alt="NFT" />
+               <h2>{&skin.name}</h2>
+               <p class="description">{"Owned on: dd-mm-yyyy"}</p>
+
+               <div class={"tokenInfo"}>
+                 <div class={"price"}>
+                    <ins class={"ins"}>{"RP"}</ins>
+                    <p>{"1350 "}</p>
+                 </div> //price
+                 <div class="duration">
+                    <p>{"★90/100"}</p>
+                 </div> //duration
+               </div>
+            </div> //main
+
+          </div> //nft
+
+    </div>
     }).collect::<Html>();
+
     owned_list
+
+    
 }
 
 fn get_skin_path(skin: &Skin, champ_name: &str) -> String {

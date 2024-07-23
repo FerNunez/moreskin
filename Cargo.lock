@@ -54,6 +54,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "boolinator"
+version = "2.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cfa8873f51c92e232f9bac4065cddef41b714152812bfc5f7672ba16d6ef8cd9"
+
+[[package]]
 name = "bumpalo"
 version = "3.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -88,10 +94,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "either"
+version = "1.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "60b1af1c220855b6ceac025d3f6ecdd2b7c4894bfe9cd9bda4fbb4bc7c0d4cf0"
+
+[[package]]
 name = "equivalent"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5443807d6dff69373d433ab9ef5378ad8df50ca6298caf15de6e52e24aaf54d5"
+
+[[package]]
+name = "fastrand"
+version = "2.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9fc0510504f03c51ada170672ac806f1f105a88aa97a5281117e1ddc3368e51a"
 
 [[package]]
 name = "fnv"
@@ -681,6 +699,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "instant"
+version = "0.1.13"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e0242819d153cba4b4b05a5a8f2a7e9bbf97b6055b2a002b395c96b5ff3c0222"
+dependencies = [
+ "cfg-if",
+ "js-sys",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
+name = "itertools"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b1c173a5686ce8bfa551b3563d0c2170bf24ca44da99c7ca4bfdab5418c3fe57"
+dependencies = [
+ "either",
+]
+
+[[package]]
 name = "itoa"
 version = "1.0.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -702,6 +741,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97b3888a4aecf77e811145cadf6eef5901f4782c53886191b2f693f24761847c"
 
 [[package]]
+name = "litrs"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b4ce301924b7887e9d637144fdade93f9dfff9b60981d4ac161db09720d39aa5"
+dependencies = [
+ "proc-macro2",
+]
+
+[[package]]
 name = "log"
 version = "0.4.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -712,6 +760,12 @@ name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78ca9ab1a0babb1e7d5695e3530886289c18cf2f87ec19a575a0abdce112e3a3"
+
+[[package]]
+name = "minimal-lexical"
+version = "0.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "68354c5c6bd36d73ff3feceb05efa59b6acb7626617f4962be322a825e61f79a"
 
 [[package]]
 name = "miniz_oxide"
@@ -730,8 +784,19 @@ dependencies = [
  "gloo-net 0.2.6",
  "serde",
  "serde_json",
+ "stylist",
  "wasm-bindgen-futures",
  "yew",
+]
+
+[[package]]
+name = "nom"
+version = "7.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d273983c5a657a70a3e8f2a01329822f3b8c8172b73826411a55751e404a0a4a"
+dependencies = [
+ "memchr",
+ "minimal-lexical",
 ]
 
 [[package]]
@@ -980,6 +1045,54 @@ dependencies = [
 ]
 
 [[package]]
+name = "stylist"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "684929eeaa18b44296533430c1453f6ea0ebff8cc7182185657fc7887ad5b9d4"
+dependencies = [
+ "fastrand",
+ "gloo-events 0.2.0",
+ "instant",
+ "once_cell",
+ "serde",
+ "stylist-core",
+ "stylist-macros",
+ "wasm-bindgen",
+ "web-sys",
+ "yew",
+]
+
+[[package]]
+name = "stylist-core"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7c59bd4f35e91ac75facd4b904916abddcbfca73ce70674e5babc47617dc50f7"
+dependencies = [
+ "nom",
+ "once_cell",
+ "serde",
+ "thiserror",
+ "wasm-bindgen",
+]
+
+[[package]]
+name = "stylist-macros"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e46a93326fb80057248f81d95d9c648eab0338f353ceae4263a5e345de836fa9"
+dependencies = [
+ "itertools",
+ "litrs",
+ "log",
+ "nom",
+ "proc-macro-error",
+ "proc-macro2",
+ "quote",
+ "stylist-core",
+ "syn 2.0.69",
+]
+
+[[package]]
 name = "syn"
 version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1197,7 +1310,8 @@ dependencies = [
 [[package]]
 name = "yew"
 version = "0.21.0"
-source = "git+https://github.com/yewstack/yew/#dbdd3b78e1f0aada1834dec5c6ee83449db9d220"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5f1a03f255c70c7aa3e9c62e15292f142ede0564123543c1cc0c7a4f31660cac"
 dependencies = [
  "console_error_panic_hook",
  "futures",
@@ -1221,8 +1335,10 @@ dependencies = [
 [[package]]
 name = "yew-macro"
 version = "0.21.0"
-source = "git+https://github.com/yewstack/yew/#dbdd3b78e1f0aada1834dec5c6ee83449db9d220"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "02fd8ca5166d69e59f796500a2ce432ff751edecbbb308ca59fd3fe4d0343de2"
 dependencies = [
+ "boolinator",
  "once_cell",
  "prettyplease",
  "proc-macro-error",
