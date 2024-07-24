@@ -1,5 +1,7 @@
-use std::{collections::HashMap, str::FromStr};
 mod parser;
+
+use crate::data::SkinDataBase;
+use std::{collections::HashMap, str::FromStr};
 use gloo::console::log;
 use parser::*;
 use stylist::Style;
@@ -7,6 +9,7 @@ use yew::prelude::*;
 
 const CHAMPION_MAP: &str = include_str!("../res/names_map.json");
 const CHAMPION_DB: &str = include_str!("../res/test.json");
+const LOOT_DB: &str = include_str!("../res/loot.json");
 const STYLE_FILE: &str = include_str!("main.css");
 
 use serde_json::Value;
@@ -23,13 +26,14 @@ fn app() -> Html {
     let champ_inventory = use_state(|| LolParsed {
         name_to_id: HashMap::new(),
         id_to_inventory: HashMap::new(),
+        skin_loot: Vec::new(),
     });
 
     if *first_load {
         let champ_inventory = champ_inventory.clone();
         log!("Parsing content");
 
-        let lol_parse = LolParsed::parse_content(&CHAMPION_DB);
+        let lol_parse = LolParsed::parse_data(&CHAMPION_DB, &LOOT_DB);
         champ_inventory.set(lol_parse);
         first_load.set(false);
         name_map_str.set(CHAMPION_MAP.to_string());
@@ -56,6 +60,7 @@ fn champ_inventory_html(lol_parsed: &LolParsed, name_map: &serde_json::Value) ->
     let champ_inventory = lol_parsed
         .name_to_id
         .iter()
+        .filter(|(champ_name, _)| *champ_name == "Annie" || *champ_name == "Fizz")
         .map(|(champ_name, champ_id)| {
             let champ_name_cleaned = name_map[&champ_name
                 .to_lowercase()
@@ -99,7 +104,7 @@ fn champ_inventory_html(lol_parsed: &LolParsed, name_map: &serde_json::Value) ->
     }
 }
 
-fn champ_list(owned_list: &Vec<Skin>, champ_name: &str) -> Html {
+fn champ_list(owned_list: &Vec<SkinDataBase>, champ_name: &str) -> Html {
     let stylecss = Style::new(STYLE_FILE).unwrap();
 
     let owned_list = owned_list
@@ -107,20 +112,12 @@ fn champ_list(owned_list: &Vec<Skin>, champ_name: &str) -> Html {
         .map(|skin| {
             html! {
 
-                //<div style="border: 10px solid gray; display: block; padding: 50px; margin:0px; width: 200px; height: 300px; line-height: 1px;">
-                 //   //<img src={ get_skin_path(&skin, &champ_name)} style="width: 100%; height: 100%; object-fit: cover; display: block; margin: 0px; padding: 0px;" />
-                 //   <p> {&skin.name} </p>
-                 //   <p> {skin.champion_id} </p>
-                 //   <p> {skin.id} </p>
-
             <div class={stylecss.clone()}>
                   <div class="nft">
                     <div class="main">
 
-                        <div class="champ-skin">
                            <img class="tokenImage" src={get_skin_path(&skin, &champ_name)} alt="NFT" />
                            <img class="imageLoot" src={"img/Feature_Loot.png"} alt="NFT" />
-                        </div> //champ-skin
                         <div class="skin-name">
                            <h2 >{&skin.name}</h2>
                         </div> //skin-name
@@ -147,7 +144,7 @@ fn champ_list(owned_list: &Vec<Skin>, champ_name: &str) -> Html {
     owned_list
 }
 
-fn get_skin_path(skin: &Skin, champ_name: &str) -> String {
+fn get_skin_path(skin: &SkinDataBase, champ_name: &str) -> String {
     let id: String = skin
         .tile_path
         .split("/")
