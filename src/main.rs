@@ -161,16 +161,21 @@ fn champ_list(owned_list: &Vec<&Skin>, champ_name: &str) -> Html {
                         <div class="skin-name">
                            <h2 >{&skin.name}</h2>
                         </div> //skin-name
-                       <p class="description">{"Owned on: dd-mm-yyyy"}</p>
-
+                        if let OwnStatus::Loot(..) = &skin.owned {
+                           <p class="description">{"Loot"}</p>
+                        }
+                        else if let OwnStatus::Owned(..) = &skin.owned{
+                           <p class="description">{"Owned"}</p>
+                        } else {
+                        <p class="description">{""}</p>
+                        }
                        <div class={"tokenInfo"}>
                          <div class={"price"}>
-                            <ins class={"ins"}>{"Ess."}</ins>
                             if let Some(value) = &skin.value {
                                 <p>{value}</p>
                             }
                             else {
-                                <p>{"0"}</p>
+                                <p>{""}</p>
                             }
                          </div> //price
                          <div class="duration">
