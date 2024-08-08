@@ -13,3 +13,4 @@ gloo = "0.6"
 gloo-net = "0.2"
 wasm-bindgen-futures = "0.4"
 stylist = {version = "0.13.0", features = ["yew_integration", "parser"]}
+web-sys = { version = "0.3", features = ["HtmlSelectElement"] }

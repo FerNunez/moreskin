@@ -41,6 +41,18 @@ pub enum Rarity {
     UNKNOWN,
 }
 
+impl Rarity {
+    pub fn to_string(&self) -> String {
+        match self {
+            Rarity::DEFAULT => "DEFAULT".to_string(),
+            Rarity::EPIC => "EPIC".to_string(),
+            Rarity::LEGENDARY => "LEGENDARY".to_string(),
+            Rarity::UNKNOWN => "UNKNOWN".to_string(),
+        }
+    }
+    
+}
+
 impl<'de> Deserialize<'de> for Rarity {
     fn deserialize<D>(deserializer: D) -> Result<Rarity, D::Error>
     where
