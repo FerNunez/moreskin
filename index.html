@@ -2,10 +2,23 @@
 <html lang="en">
 <head>
     <title>Yew Cropped Image</title>
-</head>
+
+<link rel="modulepreload" href="/moreskin/moreskin-b738111e3378a846.js" crossorigin=anonymous integrity="sha384-AAUyJXJtcL7FO+j2/fE1sXAHE5UJsrfp4I3zge9PiRmXRiu3hJFvkVJBBWhKOf4p">
+<link rel="preload" href="/moreskin/moreskin-b738111e3378a846_bg.wasm" crossorigin=anonymous integrity="sha384-xbPykJ9AoBGjcv0K7dwNGh9uUUlgGbca9lyR5rZhnVAKyAmwgvQHQ5y6vorT2UBl" as="fetch" type="application/wasm"></head>
 <body>
-</body>
-<link data-trunk rel="copy-dir" href="./img/"/>
-<link data-trunk rel="copy-dir" href="./res/"/>
+
+<script type="module" nonce="oGsgo6ek283kES/hiJ8t0Q==">
+import init, * as bindings from '/moreskin/moreskin-b738111e3378a846.js';
+const wasm = await init('/moreskin/moreskin-b738111e3378a846_bg.wasm');
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
+
+
 </html>
 
