@@ -6,11 +6,11 @@ use loot::LootSkin;
 use std::collections::HashMap;
 use yew::prelude::*;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Eq, Ord, PartialOrd)]
 pub enum OwnStatus {
-    Owned(u64), // date of purchase
-    NotOwned,
+    Owned(u64),           // date of purchase
     Loot(bool, u64, u64), // redeemable, essence, dischant
+    NotOwned,
 }
 
 #[derive(Clone, PartialEq)]
@@ -87,29 +87,29 @@ impl LolParsed {
         }
     }
 
-   // pub fn print(&self, champ_name: &str) {
-   //     match self.name_to_id.get(champ_name) {
-   //         Some(searched_id) => {
-   //             if let Some(skin_inventory) = self.id_to_inventory.get(searched_id) {
-   //                 println!("* owneds:");
-   //                 for owned in &skin_inventory.owned {
-   //                     println!("{}, link: {}", owned.name, owned.tile_path);
-   //                 }
+    // pub fn print(&self, champ_name: &str) {
+    //     match self.name_to_id.get(champ_name) {
+    //         Some(searched_id) => {
+    //             if let Some(skin_inventory) = self.id_to_inventory.get(searched_id) {
+    //                 println!("* owneds:");
+    //                 for owned in &skin_inventory.owned {
+    //                     println!("{}, link: {}", owned.name, owned.tile_path);
+    //                 }
 
-   //                 println!("* loot:");
-   //                 for loot in &skin_inventory.loot {
-   //                     println!("{}, link: {}", loot.name, loot.tile_path);
-   //                 }
+    //                 println!("* loot:");
+    //                 for loot in &skin_inventory.loot {
+    //                     println!("{}, link: {}", loot.name, loot.tile_path);
+    //                 }
 
-   //                 println!("* not_owned:");
-   //                 for not_owned in &skin_inventory.unowned {
-   //                     println!("{}, link: {}", not_owned.name, not_owned.tile_path);
-   //                 }
-   //             }
-   //         }
-   //         None => println!("Champ not found"),
-   //     }
-   // }
+    //                 println!("* not_owned:");
+    //                 for not_owned in &skin_inventory.unowned {
+    //                     println!("{}, link: {}", not_owned.name, not_owned.tile_path);
+    //                 }
+    //             }
+    //         }
+    //         None => println!("Champ not found"),
+    //     }
+    // }
 }
 
 #[derive(Properties, PartialEq)]

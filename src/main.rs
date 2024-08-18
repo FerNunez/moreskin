@@ -26,7 +26,7 @@ fn main() {
 
 #[function_component(App)]
 fn app() -> Html {
-    let champ_sort_by = use_state(|| String::from("Name"));
+    let champ_sort_by = use_state(|| String::from("Own"));
 
     let on_change = {
         let sort_by = champ_sort_by.clone();
@@ -70,7 +70,7 @@ fn app() -> Html {
         <div>
             <h1>{ "Sort Items" }</h1>
             <select onchange={on_change}>
-                <option value="Value">{ "Value" }</option>
+                <option value="Own">{ "Own" }</option>
                 <option value="Name">{ "Name" }</option>
             </select>
         </div>
@@ -109,9 +109,8 @@ fn champ_inventory_html(
                 .to_string();
 
             match sort_by {
-                "Value" => {
-                    skins_vector.sort_by(|a, b| a.name.partial_cmp(&b.name).unwrap());
-                    skins_vector.reverse();
+                "Own" => {
+                    skins_vector.sort_by(|a, b| a.owned.cmp(&b.owned));
 
                     log!("Sorted by value");
                 }
@@ -147,45 +146,37 @@ fn champ_list(owned_list: &Vec<&Skin>, champ_name: &str) -> Html {
     let owned_list = owned_list
         .iter()
         .map(|skin| {
+            let color_by_owned = match &skin.owned {
+                OwnStatus::Owned(..) => "  background: linear-gradient(0deg, rgba(25,43,15,1) 0%, rgba(17,50,2,.5) 100%);",
+                OwnStatus::Loot(..) => " background: linear-gradient(0deg, rgba(60,120,140,1) 0%, rgba(10,10,50,.5) 100%);",
+                _ => "  background: linear-gradient(0deg, rgba(40,44,52,1) 0%, rgba(17,0,32,.5) 100%); ",
+            };
             html! {
 
             <div class={stylecss.clone()}>
-                  <div class="nft">
+                  <div class="nft" style={color_by_owned}>
                     <div class="main">
-
                            <img class="tokenImage" src={get_skin_path(&skin, &champ_name)} alt="NFT" />
-
-                        if let OwnStatus::Loot(..) = &skin.owned {
-                           <img class="imageLoot" src={"img/Feature_Loot.png"} alt="NFT" />
-                        }
-                        <div class="skin-name">
-                           <h2 >{&skin.name}</h2>
-                        </div> //skin-name
-                        if let OwnStatus::Loot(..) = &skin.owned {
-                           <p class="description">{"Loot"}</p>
-                        }
-                        else if let OwnStatus::Owned(..) = &skin.owned{
-                           <p class="description">{"Owned"}</p>
-                        } else {
-                        <p class="description">{""}</p>
-                        }
-                       <div class={"tokenInfo"}>
-                         <div class={"price"}>
-                            if let Some(value) = &skin.value {
-                                <p>{value}</p>
-                            }
-                            else {
-                                <p>{""}</p>
-                            }
-                         </div> //price
-                         <div class="duration">
-                        if let  Some(rarity) = &skin.rarity {
-                        <p>{rarity.to_string()}</p>}
-                        else {
-                        <p>{""}</p>}
-
-                         </div> //duration
-                       </div>
+                            <div class="skin-name">
+                               <h2 >{&skin.name}</h2>
+                            </div> //skin-name
+                           <div class="loot">
+                                if let OwnStatus::Loot(_red, essence, _dischant) = &skin.owned {
+                                    <p >{"LOOT"} </p>
+                                    <p >{essence} </p>
+                                    <p >{&skin.rarity.unwrap().to_string()} </p>
+                                }
+                                else if let OwnStatus::Owned(..) = &skin.owned {
+                                    <div class="ownedd">
+                                       <p >{"OWNED"}</p>
+                                    </div>
+                                }
+                                else {
+                                    <div class="not-ownedd">
+                                       <p >{"NOT OWNED"}</p>
+                                    </div>
+                                }
+                           </div>
                     </div> //main
 
                   </div> //nft
