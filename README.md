@@ -7,7 +7,9 @@ This Rust application, built using the Yew framework for web Assembly, displays 
 * Gray means not owned
 
 **Motivations**
+
 This was developed as prototype to practice Rust and learn a web assembly framework. I kind of got bored mainly cause of CSS and front ending. I also stopped playing league so..
 
 **Web Page Example**
+
 https://fernunez.github.io/moreskin/
